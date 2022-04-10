@@ -44,9 +44,18 @@ if __name__ == '__main__':
                     current_line_num += 1
             last_file_name = out_file_name
         if (current_line_num - 2) % line_per_file:
-            last_file = open(last_file_name, 'r+', encoding='ascii')
-            last_file.seek(0, SEEK_SET)
-            last_file.write(str((current_line_num - 2) % line_per_file) + ';' + first_line[:-1])
-            last_file.close()
+            if len(str(line_per_file)) - 1 == len(str(current_line_num - 2)):
+                last_file = open(last_file_name, 'r+', encoding='ascii')
+                last_file.seek(0, SEEK_SET)
+                last_file.write(str((current_line_num - 2) % line_per_file) + ';' + first_line[:-1])
+                last_file.close()
+            else:
+                last_file = open(last_file_name, 'r', encoding='ascii')
+                lines = last_file.readlines()
+                lines[0] = str((current_line_num - 2) % line_per_file) + ';' + first_line
+                last_file = open(last_file_name, 'w', encoding='ascii')
+                last_file.writelines(lines)
+                last_file.close()
+
 
         print(f'Files are generated in {out_dir} successfully!\n{current_line_num - 1} lines was processed')
